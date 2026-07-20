@@ -1,4 +1,4 @@
-# Noor — My Qur'an App (Electron Desktop Build)
+# Noor - My Qur'an App (Electron Desktop Build)
 
 A personal offline Islamic reference app: full Qur'an (Arabic + English + Urdu),
 six major Hadith collections + 40 Hadith Nawawi, Obligations, People of Islam,
