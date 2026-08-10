@@ -1,4 +1,4 @@
-# نور — Noor: Technical Documentation
+# نور - Noor: Technical Documentation
 
 *How the app is built, how its data is organized, and how each feature works under the hood*
 
@@ -27,7 +27,7 @@ Prepared for Mohammed Saqib · Covers the Electron desktop build of the Noor Qur
 
 ## 1. What This App Is
 
-Noor is a personal, offline-first Islamic reference app covering the complete Qur'an, six major Hadith collections, the core obligations of a Muslim, key people in Islamic history, a curated set of duas, and an Islamic (Hijri) calendar — all packaged as a desktop application built with Electron.
+Noor is a personal, offline-first Islamic reference app covering the complete Qur'an, six major Hadith collections, the core obligations of a Muslim, key people in Islamic history, a curated set of duas, and an Islamic (Hijri) calendar - all packaged as a desktop application built with Electron.
 
 The defining design decision behind this app is that almost everything is bundled directly inside the app itself, rather than fetched from the internet each time you open it. Early versions relied on live API calls for the Qur'an and Hadith text, which broke in restricted network environments. Every major data source is now embedded, so the app works the same whether you're online or completely offline.
 
@@ -40,7 +40,7 @@ The defining design decision behind this app is that almost everything is bundle
 | Tafsir coverage | 6,236 Ibn Kathir commentary entries (one per ayah) |
 | Languages shown | Arabic (Uthmani script), English (Saheeh International), Urdu (Fateh Muhammad Jalandhry) |
 | Runs as | A standalone Electron desktop app (Windows / macOS / Linux) |
-| Internet required for | Nicer web fonts only — everything else works fully offline |
+| Internet required for | Nicer web fonts only - everything else works fully offline |
 | Core technology | HTML, CSS, vanilla JavaScript, wrapped in Electron |
 
 ---
@@ -49,25 +49,25 @@ The defining design decision behind this app is that almost everything is bundle
 
 The app has two processes, which is standard for any Electron app:
 
-- **The Main Process** (`main.js`) — a small Node.js script that creates the desktop window, builds the menu bar, and tells the window what file to open.
-- **The Renderer Process** (`app/index.html`) — a single, self-contained HTML file that is the entire application: layout, styling, logic, and data.
+- **The Main Process** (`main.js`) - a small Node.js script that creates the desktop window, builds the menu bar, and tells the window what file to open.
+- **The Renderer Process** (`app/index.html`) - a single, self-contained HTML file that is the entire application: layout, styling, logic, and data.
 
-Everything you interact with — the Qur'an reader, the Hadith browser, the Dua cards — lives inside that one HTML file. Instead of that file reaching out to the internet for its content, the Qur'an text, every hadith, and every tafsir entry are embedded directly inside it as JSON data, right alongside the code that displays them.
+Everything you interact with - the Qur'an reader, the Hadith browser, the Dua cards - lives inside that one HTML file. Instead of that file reaching out to the internet for its content, the Qur'an text, every hadith, and every tafsir entry are embedded directly inside it as JSON data, right alongside the code that displays them.
 
-### Figure 1 — System architecture
+### Figure 1 - System architecture
 
 ```mermaid
 flowchart TB
     subgraph ELECTRON["ELECTRON DESKTOP SHELL"]
-        MAIN["main.js — Main Process<br/>Creates the app window,<br/>the menu, and opens<br/>index.html"]
+        MAIN["main.js - Main Process<br/>Creates the app window,<br/>the menu, and opens<br/>index.html"]
         LOAD["win.loadFile()"]
-        RENDERER["app/index.html — Renderer Process<br/>Everything the user sees<br/>and clicks"]
+        RENDERER["app/index.html - Renderer Process<br/>Everything the user sees<br/>and clicks"]
 
         MAIN --> LOAD --> RENDERER
     end
 
     subgraph BUNDLED["DATA BUNDLED INSIDE index.html<br/>(no internet needed)"]
-        QURAN["Qur'an Data<br/>6,236 ayahs — Arabic,<br/>English, Urdu"]
+        QURAN["Qur'an Data<br/>6,236 ayahs - Arabic,<br/>English, Urdu"]
         HADITH["Hadith Data<br/>34,199 narrations across 7<br/>collections"]
         TAFSIR["Tafsir Data<br/>6,236 Ibn Kathir<br/>commentary entries"]
     end
@@ -85,21 +85,21 @@ flowchart TB
     TABS -.->|optional, almost never triggered| FALLBACK
 ```
 
-*Figure 1 — How the pieces fit together: Electron loads one HTML file, which already contains all its data.*
+*Figure 1 - How the pieces fit together: Electron loads one HTML file, which already contains all its data.*
 
 ### Why bundle the data instead of fetching it live?
 
-The first version of this app fetched the Qur'an and Hadith text from external APIs every time a Surah or a Hadith collection was opened. That worked on an open network, but failed in more restricted environments — corporate networks, sandboxed previews, or offline use — because the fetch requests were blocked before they reached the data source.
+The first version of this app fetched the Qur'an and Hadith text from external APIs every time a Surah or a Hadith collection was opened. That worked on an open network, but failed in more restricted environments - corporate networks, sandboxed previews, or offline use - because the fetch requests were blocked before they reached the data source.
 
-The fix was to download the full Qur'an, all Hadith collections, and the full Tafsir commentary once, trim them to what the app actually needs, and embed them directly inside `index.html` as JSON. The app now has zero dependency on the internet for its core content — it reads its own bundled data instead of asking a server for it.
+The fix was to download the full Qur'an, all Hadith collections, and the full Tafsir commentary once, trim them to what the app actually needs, and embed them directly inside `index.html` as JSON. The app now has zero dependency on the internet for its core content - it reads its own bundled data instead of asking a server for it.
 
 ---
 
 ## 3. Data Model (Entity–Relationship Diagram)
 
-Although the app doesn't use a database — everything lives in JSON — it's still useful to think of the content as a set of related entities, the way you would in a database design. This is what that structure looks like.
+Although the app doesn't use a database - everything lives in JSON - it's still useful to think of the content as a set of related entities, the way you would in a database design. This is what that structure looks like.
 
-### Figure 2 — Entity–relationship diagram
+### Figure 2 - Entity–relationship diagram
 
 ```mermaid
 erDiagram
@@ -193,21 +193,21 @@ erDiagram
     DUA_CATEGORY ||--o{ DUA : "contains"
 ```
 
-*Figure 2 — Entity–relationship diagram of the app's content. `PROPHET`, `KHALIFA`, and `HIJRI_MONTH` are standalone reference entities in the application.*
+*Figure 2 - Entity–relationship diagram of the app's content. `PROPHET`, `KHALIFA`, and `HIJRI_MONTH` are standalone reference entities in the application.*
 
 ### What each entity means
 
 | Entity | What it holds | Where it's used |
 |---|---|---|
-| **SURAH** | One of the 114 chapters — its Arabic name, English meaning, whether it's Meccan or Medinan, and how many ayahs it has. | Qur'an tab header |
-| **AYAH** | One verse — its Arabic text, English translation, Urdu translation, which Surah and Juz it belongs to. | Qur'an tab, main reading list |
+| **SURAH** | One of the 114 chapters - its Arabic name, English meaning, whether it's Meccan or Medinan, and how many ayahs it has. | Qur'an tab header |
+| **AYAH** | One verse - its Arabic text, English translation, Urdu translation, which Surah and Juz it belongs to. | Qur'an tab, main reading list |
 | **JUZ** | One of the 30 equal parts (Sipara) the Qur'an is traditionally divided into, for structured daily reading. | Juz jump menu + in-page markers |
-| **TAFSIR ENTRY** | Ibn Kathir's classical commentary for one specific ayah — its meaning and, where known, why it was revealed. | "Meaning & Context" panel |
+| **TAFSIR ENTRY** | Ibn Kathir's classical commentary for one specific ayah - its meaning and, where known, why it was revealed. | "Meaning & Context" panel |
 | **HADITH COLLECTION** | One of the seven hadith books (e.g. Sahih al-Bukhari). | Hadith tab, collection picker |
 | **HADITH SECTION** | A book/chapter subdivision inside a collection (e.g. "Revelation", "Belief"). | Shown as a label on each hadith card |
-| **HADITH** | One narration — its number, text, and authenticity grade where available. | Hadith tab, results list |
+| **HADITH** | One narration - its number, text, and authenticity grade where available. | Hadith tab, results list |
 | **DUA CATEGORY** | A grouping like "Anxiety & Distress" or "Gratitude". | Dua tab, filter buttons |
-| **DUA** | One supplication — Arabic, transliteration, English meaning, and its source. | Dua tab, cards |
+| **DUA** | One supplication - Arabic, transliteration, English meaning, and its source. | Dua tab, cards |
 | **PROPHET / KHALIFA** | Biographical entries for the 25 Qur'anic prophets and the four Rightly-Guided Caliphs. | People tab |
 | **HIJRI MONTH** | The 12 lunar months, which are sacred, and their significance. | Calendar tab |
 
@@ -215,9 +215,9 @@ erDiagram
 
 ## 4. Core Algorithms
 
-This section walks through the actual logic the app runs — written as pseudocode so it reads clearly regardless of your JavaScript familiarity, alongside the real function names from the code.
+This section walks through the actual logic the app runs - written as pseudocode so it reads clearly regardless of your JavaScript familiarity, alongside the real function names from the code.
 
-### 4.1 — Starting up: loading and indexing the data
+### 4.1 - Starting up: loading and indexing the data
 
 The very first thing that happens when the app opens is `bootData()`. It reads the three JSON blocks embedded in the page and builds two lookup structures in memory so the rest of the app never has to search through all 6,236 ayahs one at a time.
 
@@ -242,11 +242,11 @@ FUNCTION bootData():
     RETURN true
 ```
 
-Because the 6,236 ayahs are already stored in the correct reading order (Surah 1 Ayah 1, Surah 1 Ayah 2, … Surah 114 Ayah 6), a single pass through the list is enough to both group ayahs by Surah and detect every Juz boundary — there's no need for a separate calculation or a hand-written table of Juz boundaries anywhere in the app.
+Because the 6,236 ayahs are already stored in the correct reading order (Surah 1 Ayah 1, Surah 1 Ayah 2, … Surah 114 Ayah 6), a single pass through the list is enough to both group ayahs by Surah and detect every Juz boundary - there's no need for a separate calculation or a hand-written table of Juz boundaries anywhere in the app.
 
-### 4.2 — Rendering a Surah and reacting to taps
+### 4.2 - Rendering a Surah and reacting to taps
 
-### Figure 3 — Ayah rendering and Tafsir flow
+### Figure 3 - Ayah rendering and Tafsir flow
 
 ```mermaid
 flowchart LR
@@ -268,8 +268,8 @@ flowchart LR
     L -->|Yes| M["loadTafsir(surah, ayah)"]
     L -->|No| N["Continue reading"]
     M --> O{"Entry exists in<br/>bundled TAFSIR_DATA?"}
-    O -->|Yes — almost always| P["Show Ibn Kathir commentary<br/>instantly, no network needed"]
-    O -->|No — rare| Q["Try a live fetch<br/>as a fallback"]
+    O -->|Yes - almost always| P["Show Ibn Kathir commentary<br/>instantly, no network needed"]
+    O -->|No - rare| Q["Try a live fetch<br/>as a fallback"]
     Q --> R["Show result, or a plain<br/>'not available offline' note"]
 
     classDef process fill:#f7efd7,stroke:#c79a28,color:#222;
@@ -278,7 +278,7 @@ flowchart LR
     class F,L,O decision;
 ```
 
-*Figure 3 — What happens from picking a Surah to reading its Tafsir.*
+*Figure 3 - What happens from picking a Surah to reading its Tafsir.*
 
 ```text
 FUNCTION loadSurah(surahNumber, jumpToAyah = null):
@@ -312,9 +312,9 @@ FUNCTION loadTafsir(surah, ayah):
         DISPLAY "not available offline" message
 ```
 
-### 4.3 — Searching and paging through Hadith
+### 4.3 - Searching and paging through Hadith
 
-### Figure 4 — Hadith search and pagination flow
+### Figure 4 - Hadith search and pagination flow
 
 ```mermaid
 flowchart LR
@@ -337,7 +337,7 @@ flowchart LR
     class E decision;
 ```
 
-*Figure 4 — How a Hadith collection is filtered and paged.*
+*Figure 4 - How a Hadith collection is filtered and paged.*
 
 ```text
 FUNCTION renderHadithList():
@@ -355,9 +355,9 @@ FUNCTION renderHadithList():
     RENDER pageItems as cards (number, book title, text, grade)
 ```
 
-The search box doesn't query a server or a database — it filters the collection's array that's already sitting in memory. That's fast enough to feel instant even for Sahih al-Bukhari's 7,580 narrations, because the filtering only happens on the one collection currently open, not all seven at once.
+The search box doesn't query a server or a database - it filters the collection's array that's already sitting in memory. That's fast enough to feel instant even for Sahih al-Bukhari's 7,580 narrations, because the filtering only happens on the one collection currently open, not all seven at once.
 
-### 4.4 — Converting today's date to the Hijri calendar
+### 4.4 - Converting today's date to the Hijri calendar
 
 ```text
 FUNCTION getHijri(date):
@@ -370,7 +370,7 @@ FUNCTION getHijri(date):
             RETURN null   // browser/Electron build lacks Islamic calendar data
 ```
 
-This uses the calendar conversion tables already built into Chromium (the engine Electron runs on) — the app doesn't ship its own date-math or call any date-conversion API. That's also why the app notes that calculated Hijri dates can differ by a day from local moon-sighting announcements: it's an astronomical/tabular calculation, not a moon-sighting report.
+This uses the calendar conversion tables already built into Chromium (the engine Electron runs on) - the app doesn't ship its own date-math or call any date-conversion API. That's also why the app notes that calculated Hijri dates can differ by a day from local moon-sighting announcements: it's an astronomical/tabular calculation, not a moon-sighting report.
 
 ---
 
@@ -382,11 +382,11 @@ Full 114 Surahs with adjustable Arabic text size. Tapping an ayah's number circl
 
 **Hadith**
 
-Seven collections — the six canonical books (Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami' at-Tirmidhi, Sunan an-Nasa'i, Sunan Ibn Majah) plus 40 Hadith Nawawi. Each is searchable by keyword or hadith number, paginated 25 at a time, and shows the authenticity grade where the source data includes one.
+Seven collections - the six canonical books (Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami' at-Tirmidhi, Sunan an-Nasa'i, Sunan Ibn Majah) plus 40 Hadith Nawawi. Each is searchable by keyword or hadith number, paginated 25 at a time, and shows the authenticity grade where the source data includes one.
 
 **Obligations**
 
-A static, hand-written reference (not pulled from any external source) covering the six articles of belief, the Five Pillars, and everyday conduct — each as an expandable card explaining why it matters and how it's practiced.
+A static, hand-written reference (not pulled from any external source) covering the six articles of belief, the Five Pillars, and everyday conduct - each as an expandable card explaining why it matters and how it's practiced.
 
 **People**
 
@@ -394,7 +394,7 @@ The 25 prophets named in the Qur'an, a family-tree view from Ibrahim through to 
 
 **Dua**
 
-Sixteen authentic duas grouped into categories such as anxiety, illness, fear, guidance, and gratitude — each with Arabic, transliteration, English meaning, and its hadith or Qur'an source.
+Sixteen authentic duas grouped into categories such as anxiety, illness, fear, guidance, and gratitude - each with Arabic, transliteration, English meaning, and its hadith or Qur'an source.
 
 **Calendar**
 
@@ -412,23 +412,23 @@ Today's Hijri date, a Gregorian-to-Hijri converter for any date you pick, and al
 | `app/index.html` | The entire application: all CSS, all UI logic, and three embedded JSON blocks (Qur'an, Hadith, Tafsir) that make it work offline. |
 | `README.md` | Build and run instructions (`npm install`, `npm start`, `npm run dist`). |
 
-Inside `app/index.html` specifically, there are three `<script type="application/json">` blocks holding the bundled data, and one regular `<script>` block holding all the application logic described in Section 4. Keeping the data as `application/json` (rather than executable JavaScript) means the browser just parses it as text — it's never executed, only read.
+Inside `app/index.html` specifically, there are three `<script type="application/json">` blocks holding the bundled data, and one regular `<script>` block holding all the application logic described in Section 4. Keeping the data as `application/json` (rather than executable JavaScript) means the browser just parses it as text - it's never executed, only read.
 
 ---
 
-## 7. Offline Behavior — What Needs the Internet, and What Doesn't
+## 7. Offline Behavior - What Needs the Internet, and What Doesn't
 
 | Feature | Needs internet? |
 |---|---|
-| Reading the Qur'an (Arabic, English, Urdu) | No — fully bundled |
-| Ayah translations on tap | No — fully bundled |
-| Tafsir / "Meaning & Context" | No — fully bundled (live fetch only as an unused safety net) |
-| All 7 Hadith collections + search | No — fully bundled |
-| Obligations, People, Dua tabs | No — static content |
-| Hijri calendar + date converter | No — uses Electron's built-in calendar engine |
-| Arabic/Urdu web fonts (Amiri, Noto Nastaliq) | Optional — falls back to system fonts if offline |
+| Reading the Qur'an (Arabic, English, Urdu) | No - fully bundled |
+| Ayah translations on tap | No - fully bundled |
+| Tafsir / "Meaning & Context" | No - fully bundled (live fetch only as an unused safety net) |
+| All 7 Hadith collections + search | No - fully bundled |
+| Obligations, People, Dua tabs | No - static content |
+| Hijri calendar + date converter | No - uses Electron's built-in calendar engine |
+| Arabic/Urdu web fonts (Amiri, Noto Nastaliq) | Optional - falls back to system fonts if offline |
 
-In short: this app was rebuilt specifically so that a blocked or unreliable internet connection never breaks its core purpose — reading and understanding the Qur'an and Hadith. The only thing that genuinely benefits from being online is slightly nicer-looking Arabic and Urdu typography.
+In short: this app was rebuilt specifically so that a blocked or unreliable internet connection never breaks its core purpose - reading and understanding the Qur'an and Hadith. The only thing that genuinely benefits from being online is slightly nicer-looking Arabic and Urdu typography.
 
 ---
 
@@ -443,8 +443,8 @@ In short: this app was rebuilt specifically so that a blocked or unreliable inte
 | **Ibn Kathir** | A 14th-century scholar whose Tafsir is one of the most widely referenced classical commentaries. |
 | **Asbab al-Nuzul** | The recorded occasion or circumstance that prompted a particular ayah's revelation, where known. |
 | **Hadith** | A recorded report of something the Prophet Muhammad ﷺ said, did, or approved of. |
-| **Isnad / Grade** | The chain of narrators behind a hadith, used by scholars to grade it — commonly Sahih (authentic), Hasan (good), or Da'if (weak). |
-| **Kutub al-Sittah** | "The Six Books" — the six hadith collections regarded as most authentic across the Muslim world. |
+| **Isnad / Grade** | The chain of narrators behind a hadith, used by scholars to grade it - commonly Sahih (authentic), Hasan (good), or Da'if (weak). |
+| **Kutub al-Sittah** | "The Six Books" - the six hadith collections regarded as most authentic across the Muslim world. |
 | **Hijri calendar** | The Islamic lunar calendar, dated from the Prophet's migration (Hijrah) to Madinah in 622 CE. |
 | **Electron** | A framework that lets a web app (HTML/CSS/JS) run as a native desktop application with its own window and icon. |
 | **Main process / Renderer process** | In Electron, the Main process manages the app and its windows; the Renderer process is the webpage running inside each window. |
