@@ -2,8 +2,6 @@
 
 *How the app is built, how its data is organized, and how each feature works under the hood*
 
-Prepared for Mohammed Saqib · Covers the Electron desktop build of the Noor Qur'an App
-
 > **Diagram format:** All technical diagrams in this document are embedded as native **Mermaid** diagrams. There are no external image dependencies, so this document is self-contained as a single `.md` file.
 
 ---
