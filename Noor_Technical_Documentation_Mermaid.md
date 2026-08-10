@@ -1,4 +1,4 @@
-<div align="center">  نور - Noor: Technical Documentation </div>
+#<div align="center"> نور - Noor: Technical Documentation </div>
 
 *How the app is built, how its data is organized, and how each feature works under the hood*
 
